@@ -25,6 +25,9 @@ class CardsViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    @IBAction func didTap(_ sender: UITapGestureRecognizer) {
+        performSegue(withIdentifier: "toProfile", sender: nil)
+    }
     @IBAction func didPanImage(_ sender: UIPanGestureRecognizer) {
         let translation = sender.translation(in: view)
         if sender.state == .began {
@@ -55,6 +58,11 @@ class CardsViewController: UIViewController {
             draggableImageView.transform = CGAffineTransform.identity
         }
     }
-    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "toProfile" {
+            let temp = segue.destination as! ProfileViewController
+            temp.image = draggableImageView.image
+        }
+    }
 
 }

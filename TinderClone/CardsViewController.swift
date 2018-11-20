@@ -13,9 +13,11 @@ class CardsViewController: UIViewController {
     @IBOutlet weak var draggableImageView: UIImageView!
     var cardIniialCenter: CGPoint!
     var newCenter: CGPoint!
+    var isOffScreen: Bool!
     override func viewDidLoad() {
         super.viewDidLoad()
         cardIniialCenter = draggableImageView.center
+        isOffScreen = false
         // Do any additional setup after loading the view.
     }
 
@@ -27,10 +29,27 @@ class CardsViewController: UIViewController {
         let translation = sender.translation(in: view)
         if sender.state == .began {
             newCenter = draggableImageView.center
-            draggableImageView.transform = CGAffineTransform(rotationAngle: CGFloat(45*Double.pi/180))
+            if(sender.velocity(in: view).x > 0) {
+                draggableImageView.transform = CGAffineTransform(rotationAngle: CGFloat(30*Double.pi/180))
+            } else {
+                draggableImageView.transform = CGAffineTransform(rotationAngle: CGFloat(-30*Double.pi/180))
+            }
+            
         } else if sender.state == .changed {
-            draggableImageView.center = CGPoint(x: newCenter.x + translation.x, y: newCenter.y)
-            //draggableImageView.transform = draggableImageView.transform.rotated(by: CGFloat(45*Double.pi/180))
+            if translation.x > 100 { //to the right
+                UIView.animate(withDuration: 0.4) {
+                    self.draggableImageView.center.x = 250
+                    self.cardIniialCenter.x = 550
+                }
+            } else if translation.x < -100 { //to the left
+                UIView.animate(withDuration: 0.4) {
+                    self.draggableImageView.center.x = -250
+                    self.cardIniialCenter.x = -550
+                }
+            } else {
+                draggableImageView.center = CGPoint(x: newCenter.x + translation.x, y: newCenter.y)
+
+            }
         } else if sender.state == .ended {
             draggableImageView.center = cardIniialCenter
             draggableImageView.transform = CGAffineTransform.identity
